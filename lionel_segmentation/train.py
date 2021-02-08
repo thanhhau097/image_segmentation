@@ -41,12 +41,13 @@ def train():
         classes=len(CLASSES), 
         activation=args.activation,
     )
-    model = torch.nn.DataParallel(model)
     
     # load pretrained weights
     if args.pretrained_weights:
         weights = torch.load('./best_model.pth')
         model.load_state_dict(weights['state_dict'])
+
+    model = torch.nn.DataParallel(model)
 
     # DATA
     preprocessing_fn = smp.encoders.get_preprocessing_fn(args.encoder_name, ENCODER_WEIGHTS)

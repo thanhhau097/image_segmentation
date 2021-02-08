@@ -22,14 +22,14 @@ class SegmentationModel():
         self.model = smp.FPN(
             encoder_name=weights['encoder_name'], 
             encoder_weights=ENCODER_WEIGHTS, 
-            classes=weights['classes'], 
+            classes=len(weights['classes']), 
             activation=weights['activation']
         )
 
         self.model.load_state_dict(weights['state_dict'])
         self.size = weights['size']
         preprocessing_fn = smp.encoders.get_preprocessing_fn(weights['encoder_name'], ENCODER_WEIGHTS)
-        self.preprocessing_fn = get_preprocessing()
+        self.preprocessing_fn = get_preprocessing(preprocessing_fn)
         self.augmentation_fn = get_validation_augmentation()
 
     def process(self, input_image):
