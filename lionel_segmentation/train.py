@@ -128,7 +128,7 @@ def train():
                 'activation': args.activation, 
                 'size': args.size
             }
-            torch.save(save_dict, './best_model.pth')
+            torch.save(save_dict, './weights/best_model.pth')
             print('Model saved!')
         
 

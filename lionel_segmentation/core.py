@@ -78,4 +78,4 @@ class SegmentationModel():
 
 
 if __name__ == '__main__':
-    model = SegmentationModel(weights_path='best_model.pth')
+    model = SegmentationModel(weights_path='weights/best_model.pth')
