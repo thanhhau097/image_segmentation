@@ -7,8 +7,7 @@ This repo contains training code for models developed by https://github.com/qubv
 1. Change the list of augmentation functions in utils.py depends on your problems
 2. Training:
 ```
-CUDA_VISIBLE_DEVICES=0,3 python lionel_segmentation/train.py --train_image_folder=./data/images --train_mask_folder=./data/masks/ --val_image_folder=./data/images/ --val_mask_folder=./data/masks/ --classes=decision_box,retention_box --workers=8 --pretrained_weights=./best_model.pth
-```
+CUDA_VISIBLE_DEVICES=0 python lionel_segmentation/train.py --train_image_folder=./data/images --train_mask_folder=./data/masks/ --val_image_folder=./data/images/ --val_mask_folder=./data/masks/ --classes=decision_box,retention_box,stamp_box --workers=8```
 
 # LIST OF MODELS AND ENCODERS (continue updating on https://github.com/qubvel/segmentation_models.pytorch)
 

@@ -80,6 +80,10 @@ class SegmentationModel():
 
 
 if __name__ == '__main__':
+    from tqdm import tqdm
+
     model = SegmentationModel(weights_path='weights/best_model.pth')
-    draw_image = model.process_and_visualize_bbox('/mnt/ai_filestore/home/lionel/research/image_segmentation/data/images/20210128110617_1.png')
-    cv2.imwrite('data/debug_image.png', draw_image)
+    IMAGE_FOLDER = '/mnt/ai_filestore/home/lionel/research/image_segmentation/data/val_images/'
+    for image_name in tqdm(os.listdir(IMAGE_FOLDER)):
+        draw_image = model.process_and_visualize_bbox(os.path.join(IMAGE_FOLDER, image_name))
+        cv2.imwrite('data/debugs/{}'.format(image_name), draw_image)
