@@ -23,7 +23,8 @@ parser.add_argument("--encoder_name", type=str, default='se_resnext50_32x4d', he
 parser.add_argument("--encoder_weights", type=str, default='imagenet', help="type of encoder weights")
 parser.add_argument("--size", type=int, default=512, help="training and evaluation size to scale")
 parser.add_argument("--batch_size", type=int, default=8, help="training and evaluation batch size")
-parser.add_argument("--lr", type=int, default=0.0001, help="learning rate")
+parser.add_argument("--lr", type=float, default=0.0001, help="learning rate")
+parser.add_argument("--epochs", type=int, default=100, help="number of training epochs")
 parser.add_argument("--workers", type=int, default=8, help="number of training workers/cpus")
 parser.add_argument("--pretrained_weights", type=str, help="path to pretrained weights")
 parser.add_argument("--activation", type=str, default="softmax2d", help="type of activation function for the model, softmax2d/None/sigmoid")
@@ -88,7 +89,7 @@ def train():
 
     # TRAINING:
     optimizer = torch.optim.Adam([ 
-        dict(params=model.parameters(), lr=0.0001),
+        dict(params=model.parameters(), lr=args.lr),
     ])
 
     train_epoch = smp.utils.train.TrainEpoch(
@@ -110,7 +111,7 @@ def train():
 
     max_score = 0
 
-    for i in range(0, 5000):
+    for i in range(0, args.epochs):
         print('\nEpoch: {}'.format(i))
         train_logs = train_epoch.run(train_loader)
         valid_logs = valid_epoch.run(valid_loader)
