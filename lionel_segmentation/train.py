@@ -47,7 +47,7 @@ def train():
     
     # load pretrained weights
     if args.pretrained_weights:
-        weights = torch.load('./best_model.pth')
+        weights = torch.load(args.pretrained_weights)
         model.load_state_dict(weights['state_dict'])
 
     model = torch.nn.DataParallel(model)

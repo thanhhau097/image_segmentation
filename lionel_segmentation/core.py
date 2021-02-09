@@ -17,6 +17,8 @@ from lionel_segmentation.utils import get_model_class
 
 class SegmentationModel():
     def __init__(self, weights_path):
+        self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
         weights = torch.load(weights_path)
         model_class = get_model_class(weights['model'])
         self.model = model_class(
@@ -25,6 +27,7 @@ class SegmentationModel():
             classes=len(weights['classes']), 
             activation=weights['activation']
         )
+        self.model = self.model.to(self.device)
 
         self.classes = weights['classes']
         self.model.load_state_dict(weights['state_dict'])
@@ -43,6 +46,7 @@ class SegmentationModel():
         image = cv2.resize(raw_image, (self.size, self.size))
         image = self.augmentation_fn(image=image)['image']
         image = self.preprocessing_fn(image=image)['image']
+        image = torch.from_numpy(image).to(self.device).unsqueeze(0)
 
         pr_mask = self.model.predict(image)
         pr_mask = (pr_mask.squeeze().cpu().numpy().round())
@@ -77,3 +81,5 @@ class SegmentationModel():
 
 if __name__ == '__main__':
     model = SegmentationModel(weights_path='weights/best_model.pth')
+    draw_image = model.process_and_visualize_bbox('/mnt/ai_filestore/home/lionel/research/image_segmentation/data/images/20210128110617_1.png')
+    cv2.imwrite('data/debug_image.png', draw_image)
