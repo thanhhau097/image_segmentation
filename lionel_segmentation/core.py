@@ -17,8 +17,6 @@ from lionel_segmentation.utils import get_model_class
 
 class SegmentationModel():
     def __init__(self, weights_path):
-        ENCODER_WEIGHTS = 'imagenet'
-
         weights = torch.load(weights_path)
         model_class = get_model_class(weights['model'])
         self.model = model_class(
