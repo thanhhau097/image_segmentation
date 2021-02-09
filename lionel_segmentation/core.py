@@ -31,7 +31,7 @@ class SegmentationModel():
         self.classes = weights['classes']
         self.model.load_state_dict(weights['state_dict'])
         self.size = weights['size']
-        preprocessing_fn = smp.encoders.get_preprocessing_fn(weights['encoder_name'], ENCODER_WEIGHTS)
+        preprocessing_fn = smp.encoders.get_preprocessing_fn(weights['encoder_name'], weights['encoder_weights'])
         self.preprocessing_fn = get_preprocessing(preprocessing_fn)
         self.augmentation_fn = get_validation_augmentation()
 

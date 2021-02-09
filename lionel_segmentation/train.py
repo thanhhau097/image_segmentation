@@ -53,7 +53,7 @@ def train():
     model = torch.nn.DataParallel(model)
 
     # DATA
-    preprocessing_fn = smp.encoders.get_preprocessing_fn(args.encoder_name, ENCODER_WEIGHTS)
+    preprocessing_fn = smp.encoders.get_preprocessing_fn(args.encoder_name, args.encoder_weights)
 
     train_dataset = SegmentationDataset(
         args.train_image_folder, 
