@@ -1,17 +1,18 @@
 import os
 import json
+import random
 
 import cv2
 import torch
 import albumentations as albu
 import numpy as np
 import segmentation_models_pytorch as smp
-from tqdm import tqdm
 
 from lionel_segmentation.utils import to_tensor
 from lionel_segmentation.utils import get_preprocessing
 from lionel_segmentation.utils import get_validation_augmentation
 from lionel_segmentation.utils import get_bounding_box
+from lionel_segmentation.utils import get_model_class
 
 
 class SegmentationModel():
@@ -19,13 +20,15 @@ class SegmentationModel():
         ENCODER_WEIGHTS = 'imagenet'
 
         weights = torch.load(weights_path)
-        self.model = smp.FPN(
+        model_class = get_model_class(weights['model'])
+        self.model = model_class(
             encoder_name=weights['encoder_name'], 
-            encoder_weights=ENCODER_WEIGHTS, 
+            encoder_weights=weights['encoder_weights'], 
             classes=len(weights['classes']), 
             activation=weights['activation']
         )
 
+        self.classes = weights['classes']
         self.model.load_state_dict(weights['state_dict'])
         self.size = weights['size']
         preprocessing_fn = smp.encoders.get_preprocessing_fn(weights['encoder_name'], ENCODER_WEIGHTS)
@@ -39,7 +42,7 @@ class SegmentationModel():
         return: segmentation mask
         """
         raw_image = self.handle_input_image(input_image)
-        image = cv2.resize(raw_image, (512, 512))
+        image = cv2.resize(raw_image, (self.size, self.size))
         image = self.augmentation_fn(image=image)['image']
         image = self.preprocessing_fn(image=image)['image']
 
@@ -55,13 +58,12 @@ class SegmentationModel():
         raw_image = self.handle_input_image(input_image)
 
         mask = self.process(input_image)
-        bb1 = get_bounding_box(mask == 1)
-        bb2 = get_bounding_box(mask == 2)
-
-        draw_image = cv2.cvtColor(raw_image, cv2.COLOR_RGB2BGR)
-        cv2.rectangle(draw_image, (bb1[0], bb1[1]), (bb1[2], bb1[3]), (204, 102, 0), 2)
-        cv2.rectangle(draw_image, (bb2[0], bb2[1]), (bb2[2], bb2[3]), (0, 255, 255), 2)
-
+        
+        draw_image = raw_image.copy()
+        for i in range(1, len(self.classes)):
+            bb = get_bounding_box(mask == i)
+            cv2.rectangle(draw_image, (bb[0], bb[1]), (bb[2], bb[3]), (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)), 3)
+            
         return draw_image
 
     def handle_input_image(self, input_image):

@@ -9,6 +9,7 @@ from lionel_segmentation.utils import get_training_augmentation
 from lionel_segmentation.utils import get_validation_augmentation
 from lionel_segmentation.utils import get_preprocessing
 from lionel_segmentation.losses import GeneralizedDiceLossWrapper
+from lionel_segmentation.utils import get_model_class
 
 
 parser = argparse.ArgumentParser()
@@ -17,7 +18,9 @@ parser.add_argument("--train_mask_folder", type=str, help="path to training mask
 parser.add_argument("--val_image_folder", type=str, help="path to validation image_folder")
 parser.add_argument("--val_mask_folder", type=str, help="path to validation mask_folder")
 parser.add_argument("--classes", type=str, help="list of class to train, separated by comma")
+parser.add_argument("--model", type=str, default='fpn', help="type of training model")
 parser.add_argument("--encoder_name", type=str, default='se_resnext50_32x4d', help="type of encoder")
+parser.add_argument("--encoder_weights", type=str, default='imagenet', help="type of encoder weights")
 parser.add_argument("--size", type=int, default=512, help="training and evaluation size to scale")
 parser.add_argument("--batch_size", type=int, default=8, help="training and evaluation batch size")
 parser.add_argument("--lr", type=int, default=0.0001, help="learning rate")
@@ -32,12 +35,12 @@ def train():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
     # CREATE MODEL
-    ENCODER_WEIGHTS = "imagenet"
     CLASSES = ["unlabelled"] + args.classes.split(',')
 
-    model = smp.FPN(
+    model_class = get_model_class(args.model)
+    model = model_class(
         encoder_name=args.encoder_name, 
-        encoder_weights=ENCODER_WEIGHTS, 
+        encoder_weights=args.encoder_weights, 
         classes=len(CLASSES), 
         activation=args.activation,
     )
@@ -118,7 +121,9 @@ def train():
 
             save_dict = {
                 'state_dict': model.module.state_dict(),
+                'model': args.model,
                 'encoder_name': args.encoder_name,
+                'encoder_weights': args.encoder_weights,
                 'classes': CLASSES,
                 'activation': args.activation, 
                 'size': args.size

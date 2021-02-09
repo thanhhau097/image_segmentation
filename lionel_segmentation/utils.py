@@ -1,6 +1,6 @@
 import albumentations as albu
 import numpy as np
-
+import segmentation_models_pytorch as smp
 
 def get_training_augmentation():
     train_transform = [
@@ -83,3 +83,19 @@ def get_bounding_box(mask):
     y2 = len(masky) - np.argmax(masky[::-1])
     # sub_image = image[y1:y2, x1:x2]
     return x1, y1, x2, y2
+
+
+def get_model_class(model_name):
+    DICT = {
+        "unet": smp.Unet, 
+        "unetplusplus": smp.UnetPlusPlus, 
+        "manet": smp.MAnet, 
+        "linknet": smp.Linknet, 
+        "fpn": smp.FPN, 
+        "pspnet": smp.PSPNet, 
+        "pan": smp.PAN, 
+        "deeplabv3": smp.DeepLabV3, 
+        "deeplabv3plus": smp.DeepLabV3Plus
+    }
+
+    return DICT[model_name]
