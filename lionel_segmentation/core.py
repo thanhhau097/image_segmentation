@@ -23,7 +23,7 @@ class SegmentationModel():
         model_class = get_model_class(weights['model'])
         self.model = model_class(
             encoder_name=weights['encoder_name'], 
-            encoder_weights=weights['encoder_weights'], 
+            # encoder_weights=weights['encoder_weights'], 
             classes=len(weights['classes']), 
             activation=weights['activation']
         )
