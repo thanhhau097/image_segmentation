@@ -19,7 +19,7 @@ class SegmentationModel():
     def __init__(self, weights_path):
         self.device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
-        weights = torch.load(weights_path)
+        weights = torch.load(weights_path, map_location=self.device)
         model_class = get_model_class(weights['model'])
         self.model = model_class(
             encoder_name=weights['encoder_name'], 

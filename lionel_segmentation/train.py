@@ -48,7 +48,7 @@ def train():
     
     # load pretrained weights
     if args.pretrained_weights:
-        weights = torch.load(args.pretrained_weights)
+        weights = torch.load(args.pretrained_weights, map_location=device)
         model.load_state_dict(weights['state_dict'])
 
     model = torch.nn.DataParallel(model)
