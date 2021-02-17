@@ -3,5 +3,4 @@ torchvision
 numpy
 opencv-python
 tqdm
-git+https://github.com/qubvel/segmentation_models.pytorch
 albumentations
