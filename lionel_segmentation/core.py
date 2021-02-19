@@ -58,8 +58,8 @@ class SegmentationModel():
 
     def process_and_visualize_bbox(self, input_image):
         raw_image = self.handle_input_image(input_image)
-
         mask = self.process(input_image)
+        # import pdb; pdb.set_trace()
         
         draw_image = raw_image.copy()
         for i in range(1, len(self.classes)):
@@ -83,7 +83,7 @@ if __name__ == '__main__':
     from tqdm import tqdm
 
     model = SegmentationModel(weights_path='weights/best_model.pth')
-    IMAGE_FOLDER = '/mnt/ai_filestore/home/lionel/research/image_segmentation/data/val_images/'
+    IMAGE_FOLDER = '/mnt/ai_filestore/home/lionel/research/image_segmentation/data/issue_number/region_images'
     for image_name in tqdm(os.listdir(IMAGE_FOLDER)):
         draw_image = model.process_and_visualize_bbox(os.path.join(IMAGE_FOLDER, image_name))
         cv2.imwrite('data/debugs/{}'.format(image_name), draw_image)

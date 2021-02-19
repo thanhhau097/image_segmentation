@@ -14,7 +14,7 @@ MASK_FOLDER = './data/masks'
 if not os.path.exists(MASK_FOLDER):
     os.makedirs(MASK_FOLDER, exist_ok=True)
 
-SEG_CLASSES = ['decision_box', 'retention_box', 'stamp_box']
+SEG_CLASSES = ['decision_box', 'retention_box', 'stamp_box', 'issue_number_box']
 for label_name in tqdm(os.listdir(LABEL_FOLDER)):
     label_path = os.path.join(LABEL_FOLDER, label_name)
     with open(label_path, 'r') as f:
@@ -40,11 +40,14 @@ for label_name in tqdm(os.listdir(LABEL_FOLDER)):
                 h = max(all_points_y) - min(all_points_y)
             
             if note == 'decision_box':
-                mask[y: y + h, x: x + w] += 1
+                mask[y: y + h, x: x + w] = 1
             elif note == 'retention_box':
-                mask[y: y + h, x: x + w] += 2
+                mask[y: y + h, x: x + w] = 2
+            elif note == 'stamp_box':
+                mask[y: y + h, x: x + w] = 3
             else:
-                mask[y: y + h, x: x + w] += 3
+                mask[y: y + h, x: x + w] = 4
     
     # import pdb; pdb.set_trace()
+    print(np.unique(mask, return_counts=True))
     cv2.imwrite(os.path.join(MASK_FOLDER, data['file_name']), mask)

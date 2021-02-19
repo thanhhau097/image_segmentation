@@ -118,24 +118,22 @@ class GeneralizedDiceLossWrapper():
 
 def expand_target(x, n_class, mode='softmax'):
     """
-        Converts NxDxHxW label image to NxCxDxHxW, where each label is stored in a separate channel
-        :param input: 4D input image (NxDxHxW)
+        Converts NxDxHxW label image to NxCxDxH, where each label is stored in a separate channel
+        :param input: 3D input image (NxDxH)
         :param C: number of channels/labels
-        :return: 5D output image (NxCxDxHxW)
+        :return: 4D output image (NxCxDxH)
         """
-    assert x.dim() == 4
+    assert x.dim() == 3
     shape = list(x.size())
     shape.insert(1, n_class)
     shape = tuple(shape)
     xx = torch.zeros(shape)
     if mode.lower() == 'softmax':
-        xx[:, 1, :, :, :] = (x == 1)
-        xx[:, 2, :, :, :] = (x == 2)
-        xx[:, 3, :, :, :] = (x == 3)
+        for i in range(1, n_class):
+            xx[:, i, :, :, :] = (x == i)
     if mode.lower() == 'sigmoid':
-        xx[:, 0, :, :, :] = (x == 1)
-        xx[:, 1, :, :, :] = (x == 2)
-        xx[:, 2, :, :, :] = (x == 3)
+        for i in range(1, n_class):
+            xx[:, i - 1, :, :, :] = (x == i)
     return xx.to(x.device)
 
 

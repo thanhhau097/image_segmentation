@@ -11,7 +11,7 @@ class SegmentationDataset(Dataset):
     def __init__(self, image_folder, mask_folder, classes, size, augmentation, preprocessing):
         self.image_paths, self.mask_paths = self.get_input_paths(image_folder, mask_folder)
         # convert str names to class values on masks
-        self.class_values = [classes.index(c.lower()) for c in classes]
+        self.class_values = [classes.index(c) for c in classes]
         self.size = size
         self.augmentation = augmentation
         self.preprocessing = preprocessing
@@ -50,4 +50,5 @@ class SegmentationDataset(Dataset):
             sample = self.preprocessing(image=image, mask=mask)
             image, mask = sample['image'], sample['mask']
         
+        # import pdb; pdb.set_trace()
         return image, torch.tensor(mask, dtype=torch.int64)
