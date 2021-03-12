@@ -83,40 +83,35 @@ class ChargridDataset(Dataset):
 
     def __getitem__(self, index):
         # TODO: reduce loading, augmentation, preprocessing time
-        import time
-        start_time = time.time()
-        # with open(self.image_paths[index], 'rb') as f:
-        #     chargrid = pickle.load(f)
+        # import time
+        # start_time = time.time()
+
         chargrid = cv2.imread(self.image_paths[index], 0)
         chargrid = cv2.resize(chargrid, self.size, interpolation=cv2.INTER_NEAREST)
         chargrid = [(chargrid == v) for v in self.charset_values]
         chargrid = np.stack(chargrid, axis=-1).astype(np.uint8)
-        print('read chargrid', time.time() - start_time)
-        start_time = time.time()
+        # print('read chargrid', time.time() - start_time)
+        # start_time = time.time()
 
         mask = cv2.imread(self.mask_paths[index], 0)
         mask = cv2.resize(mask, self.size, interpolation=cv2.INTER_NEAREST)
         masks = [(mask == v) for v in self.class_values]
         mask = np.stack(masks, axis=-1).astype(np.uint8)
-        # with open(self.mask_paths[index], 'rb') as f:
-        #     mask = pickle.load(f)
-        print('read mask', time.time() - start_time)
-        start_time = time.time()
+        # print('read mask', time.time() - start_time)
+        # start_time = time.time()
 
         image = np.zeros(mask.shape[:2] + (3,), dtype=np.uint8)
-        # import pdb; pdb.set_trace()
         # if self.augmentation:
         #     chargrid = self.augmentation(image=image, mask=chargrid)['mask']
         #     mask = self.augmentation(image=image, mask=mask)['mask']
-        print('augment time', time.time() - start_time)
-        start_time = time.time()    
+        # print('augment time', time.time() - start_time)
+        # start_time = time.time()    
         
         # apply preprocessing
         if self.preprocessing:
             chargrid = self.preprocessing(image=image, mask=chargrid)['mask']
             mask = self.preprocessing(image=image, mask=mask)['mask']
         
-        print('preprocessing time', time.time() - start_time)
+        # print('preprocessing time', time.time() - start_time)
 
-        # import pdb; pdb.set_trace()
         return chargrid, torch.tensor(mask, dtype=torch.int64)

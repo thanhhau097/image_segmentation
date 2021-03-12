@@ -49,6 +49,8 @@ def train():
         CLASSES = ["unlabelled"] + args.classes.split(',')
         charset = 'rgb'
 
+    print('training classes:', CLASSES)
+
     model_class = get_model_class(args.model)
     model = model_class(
         in_channels=len(charset),

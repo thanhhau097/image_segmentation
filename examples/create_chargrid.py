@@ -22,8 +22,8 @@ CLASSES = ['background', 'key_issue_name', 'key_date_status', 'value_issue_name'
 cls2idx = dict((c, i) for i, c in enumerate(CLASSES))
 idx2cls = dict((i, c) for i, c in enumerate(CLASSES))
 
-IMAGE_FOLDER = './data/images/'
-LABEL_FOLDER = './data/labels/'
+IMAGE_FOLDER = './data/chargrid/images/'
+LABEL_FOLDER = './data/chargrid/labels/'
 
 CHARGRID_FOLDER = './data/chargrid/chargrid_images/'
 MASK_FOLDER = './data/chargrid/masks/'
